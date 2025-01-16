@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from .forms import ExpenseForm
+from .forms import ExpenseForm,RegistrationForm
 from .models import Expense
 from django.db.models import Sum
 import datetime
@@ -57,3 +57,14 @@ def delete(request,id):
         expense = get_object_or_404(Expense, id=id)
         expense.delete()
     return redirect('index')
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            return redirect('login')
+    else:
+        form = RegistrationForm()
+    return render(request, 'expense/register.html', {'form': form})
